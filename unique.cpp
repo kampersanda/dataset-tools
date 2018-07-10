@@ -1,7 +1,7 @@
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
-#include <random>
 
 #include "cmdline.h"
 
@@ -23,9 +23,8 @@ int main(int argc, char* argv[]) {
     data.push_back(line);
   }
 
-  std::random_device seed_gen;
-  std::mt19937 engine(seed_gen());
-  std::shuffle(data.begin(), data.end(), engine);
+  std::sort(data.begin(), data.end());
+  data.erase(std::unique(data.begin(), data.end()), data.end());
 
   for (const auto& v : data) {
     std::cout << v << '\n';

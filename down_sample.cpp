@@ -8,9 +8,11 @@
 int main(int argc, char* argv[]) {
   cmdline::parser p;
   p.add<std::string>("input_fn", 'i', "input file name", true);
+  p.add<size_t>("step", 's', "step width for down sample", true);
   p.parse_check(argc, argv);
 
   auto input_fn = p.get<std::string>("input_fn");
+  auto step = p.get<size_t>("step");
 
   std::ifstream ifs(input_fn);
   if (!ifs) {
@@ -18,17 +20,14 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  std::vector<std::string> data;
+  size_t i = 0;
   for (std::string line; std::getline(ifs, line);) {
-    data.push_back(line);
-  }
-
-  std::random_device seed_gen;
-  std::mt19937 engine(seed_gen());
-  std::shuffle(data.begin(), data.end(), engine);
-
-  for (const auto& v : data) {
-    std::cout << v << '\n';
+    if (i == 0) {
+      std::cout << line << '\n';
+    }
+    if (++i == step) {
+      i = 0;
+    }
   }
 
   return 0;
