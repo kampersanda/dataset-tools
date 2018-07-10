@@ -14,4 +14,7 @@ message(STATUS "CXX_FLAGS_DEBUG are ${CMAKE_CXX_FLAGS_DEBUG}")
 message(STATUS "CXX_FLAGS_RELEASE are ${CMAKE_CXX_FLAGS_RELEASE}")
 
 add_executable(kamp_sample sample.cpp)
-install(TARGETS kamp_sample RUNTIME DESTINATION bin)
+add_executable(kamp_shuffle shuffle.cpp)
+
+install(TARGETS kamp_sample kamp_shuffle
+ RUNTIME DESTINATION bin)
