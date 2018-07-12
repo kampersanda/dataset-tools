@@ -18,7 +18,5 @@ add_executable(kamp_down_sample down_sample.cpp)
 add_executable(kamp_shuffle shuffle.cpp)
 add_executable(kamp_unique unique.cpp)
 
-install(
-    TARGETS kamp_random_sample kamp_down_sample kamp_shuffle kamp_unique
-    RUNTIME DESTINATION bin
-    )
+install(TARGETS kamp_random_sample kamp_down_sample kamp_shuffle kamp_unique
+        RUNTIME DESTINATION bin)
