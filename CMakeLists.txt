@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(MY_TOOLS)
+project(my_tools)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -pthread")
 
@@ -18,6 +18,8 @@ add_executable(kamp_random_sample random_sample.cpp)
 add_executable(kamp_down_sample down_sample.cpp)
 add_executable(kamp_shuffle shuffle.cpp)
 add_executable(kamp_unique unique.cpp)
+add_executable(kamp_statistics statistics.cpp)
 
-install(TARGETS kamp_random_sample kamp_down_sample kamp_shuffle kamp_unique
+install(TARGETS
+        kamp_random_sample kamp_down_sample kamp_shuffle kamp_unique kamp_statistics
         RUNTIME DESTINATION bin)
