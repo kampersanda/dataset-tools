@@ -17,9 +17,10 @@ message(STATUS "CMAKE_INSTALL_PREFIX is ${CMAKE_INSTALL_PREFIX}")
 add_executable(kamp_random_sample random_sample.cpp)
 add_executable(kamp_down_sample down_sample.cpp)
 add_executable(kamp_shuffle shuffle.cpp)
+add_executable(kamp_sort sort.cpp)
 add_executable(kamp_unique unique.cpp)
 add_executable(kamp_statistics statistics.cpp)
 
 install(TARGETS
-        kamp_random_sample kamp_down_sample kamp_shuffle kamp_unique kamp_statistics
+        kamp_random_sample kamp_down_sample kamp_shuffle kamp_sort kamp_unique kamp_statistics
         RUNTIME DESTINATION bin)
