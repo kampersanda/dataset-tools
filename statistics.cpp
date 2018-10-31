@@ -25,7 +25,11 @@ void statistics(std::istream& is, std::ostream& os) {
   }
 
   os << "num_strs:   " << num_strs << '\n';
+  os << " - in Mega: " << double(num_strs) / (1000 * 1000) << '\n';
+  os << " - in Giga: " << double(num_strs) / (1000 * 1000 * 1000) << '\n';
   os << "num_chars:  " << num_chars << '\n';
+  os << " - in Mebi: " << double(num_strs) / (1024 * 1024) << '\n';
+  os << " - in Gibi: " << double(num_strs) / (1024 * 1024 * 1024) << '\n';
   os << "min_length: " << min_length << '\n';
   os << "max_length: " << max_length << '\n';
   os << "ave_length: " << double(num_chars) / num_strs << '\n';

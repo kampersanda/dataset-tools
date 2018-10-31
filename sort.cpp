@@ -25,6 +25,11 @@ int main(int argc, char* argv[]) {
   auto input_fn = p.get<std::string>("input_fn");
   auto output_fn = p.get<std::string>("output_fn");
 
+  if (input_fn == output_fn) {
+    std::cerr << "error: input_fn == output_fn\n";
+    return 1;
+  }
+
   std::ifstream ifs(input_fn);
   if (!ifs) {
     std::cerr << "open error: " << input_fn << '\n';
