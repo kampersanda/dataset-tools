@@ -66,6 +66,8 @@ void statistics(std::istream& is, std::ostream& os) {
 }
 
 int main(int argc, char* argv[]) {
+  std::ios::sync_with_stdio(false);
+
   cmdline::parser p;
   p.add<std::string>("input_fn", 'i', "input file name", true);
   p.add<bool>("terminator", 't', "consider the terminator", false, true);
