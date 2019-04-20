@@ -18,7 +18,7 @@ int print(const std::string& input_fn, size_t num) {
     if (ifs.eof()) {
       break;
     }
-    std::cout << dim << '\t';
+    std::cout << dim << ": ";
     for (uint32_t j = 0; j < dim; ++j) {
       T v;
       ifs.read(reinterpret_cast<char*>(&v), sizeof(v));
