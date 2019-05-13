@@ -50,7 +50,7 @@ int print_tiny(const std::string& input_fn, size_t num) {
       break;
     }
     for (uint32_t j = 0; j < DIM; ++j) {
-      std::cout << data[i] << ' ';
+      std::cout << data[j] << ' ';
     }
     std::cout << '\n';
   }
