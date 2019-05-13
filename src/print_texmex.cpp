@@ -34,12 +34,36 @@ int print(const std::string& input_fn, size_t num) {
   return 0;
 }
 
+int print_tiny(const std::string& input_fn, size_t num) {
+  std::ifstream ifs(input_fn);
+  if (!ifs) {
+    std::cerr << "open error: " << input_fn << '\n';
+    return 1;
+  }
+
+  const size_t DIM = 384;
+  float data[DIM] = {};
+
+  for (size_t i = 0; i < num; ++i) {
+    ifs.read(reinterpret_cast<char*>(data), sizeof(float) * DIM);
+    if (ifs.eof()) {
+      break;
+    }
+    for (uint32_t j = 0; j < DIM; ++j) {
+      std::cout << data[i] << ' ';
+    }
+    std::cout << '\n';
+  }
+
+  return 0;
+}
+
 int main(int argc, char** argv) {
   std::ios::sync_with_stdio(false);
 
   cmdline::parser p;
   p.add<std::string>("input_fn", 'i', "input file name", true);
-  p.add<std::string>("format", 'f', "fvecs | ivecs | bvecs", true);
+  p.add<std::string>("format", 'f', "fvecs | ivecs | bvecs | tiny", true);
   p.add<size_t>("num", 'n', "number of sketches printed", false, 5);
   p.parse_check(argc, argv);
 
@@ -55,6 +79,9 @@ int main(int argc, char** argv) {
   }
   if (format == "bvecs") {
     return print<uint8_t>(input_fn, num);
+  }
+  if (format == "tiny") {
+    return print_tiny(input_fn, num);
   }
 
   return 1;
