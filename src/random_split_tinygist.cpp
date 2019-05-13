@@ -2,10 +2,42 @@
 #include <fstream>
 #include <iostream>
 #include <random>
+#include <set>
 
 #include "cmdline.h"
 
 const uint32_t DIM = 384;
+
+size_t get_file_size(char const* filename) {
+  std::ifstream is(filename, std::ios::binary | std::ios::ate);
+  if (!is.good()) {
+    throw std::runtime_error(
+        "Error in opening binary "
+        "file.");
+  }
+  size_t bytes = (size_t)is.tellg();
+  is.close();
+  return bytes;
+}
+
+std::vector<size_t> random_choice(size_t n, size_t max) {
+  std::set<size_t> dup;
+
+  std::random_device random_device;
+  std::mt19937 engine{random_device()};
+  std::uniform_int_distribution<size_t> dist(0, max);
+
+  while (dup.size() < n) {
+    dup.insert(dist(engine));
+  }
+
+  std::vector<size_t> ret;
+  for (auto v : dup) {
+    ret.push_back(v);
+  }
+
+  return ret;
+}
 
 int main(int argc, char* argv[]) {
   std::ios::sync_with_stdio(false);
@@ -27,7 +59,17 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  std::vector<float> vecs;
+  size_t filesize = get_file_size(input_fn.c_str());
+  if (filesize % (DIM * sizeof(float)) != 0) {
+    std::cerr << "error: filesize is strange\n";
+    return 1;
+  }
+
+  size_t num_images = filesize / (DIM * sizeof(float));
+  std::cout << "# of images: " << num_images << std::endl;
+
+  auto A = random_choice(num, num_images - 1);
+  A.push_back(num_images);
 
   {
     std::ifstream ifs(input_fn);
@@ -36,59 +78,41 @@ int main(int argc, char* argv[]) {
       return 1;
     }
 
-    float buf[DIM] = {};
-
-    while (true) {
-      ifs.read(reinterpret_cast<char*>(buf), sizeof(float) * DIM);
-      if (ifs.eof()) {
-        break;
-      }
-      std::copy(buf, buf + DIM, std::back_inserter(vecs));
-    }
-  }
-
-  std::cout << "# of images: " << vecs.size() / DIM << std::endl;
-
-  std::vector<const float*> ptrs;
-  ptrs.reserve(vecs.size() / DIM);
-
-  for (size_t i = 0; i < vecs.size(); i += DIM) {
-    ptrs.push_back(vecs.data() + i);
-  }
-
-  std::random_device seed_gen;
-  std::mt19937 engine(seed_gen());
-  std::shuffle(ptrs.begin(), ptrs.end(), engine);
-
-  size_t i = 0;
-
-  if (num > ptrs.size()) {
-    num = ptrs.size();
-  }
-
-  {
     A_fn += ".fvecs";
-    std::ofstream ofs(A_fn);
-    if (!ofs) {
+    std::ofstream ofsA(A_fn);
+    if (!ofsA) {
       std::cerr << "open error: " << A_fn << '\n';
       return 1;
     }
-    for (; i < num; ++i) {
-      ofs.write(reinterpret_cast<const char*>(&DIM), sizeof(uint32_t));
-      ofs.write(reinterpret_cast<const char*>(ptrs[i]), sizeof(float) * DIM);
-    }
-  }
 
-  {
     B_fn += ".fvecs";
-    std::ofstream ofs(B_fn);
-    if (!ofs) {
+    std::ofstream ofsB(B_fn);
+    if (!ofsB) {
       std::cerr << "open error: " << B_fn << '\n';
       return 1;
     }
-    for (; i < ptrs.size(); ++i) {
-      ofs.write(reinterpret_cast<const char*>(&DIM), sizeof(uint32_t));
-      ofs.write(reinterpret_cast<const char*>(ptrs[i]), sizeof(float) * DIM);
+
+    float buf[DIM] = {};
+
+    size_t j = 0;
+    const size_t bytes = sizeof(float) * DIM;
+
+    size_t print_point = 0;
+
+    for (size_t i = 0; i < num_images; i++) {
+      ifs.read(reinterpret_cast<char*>(buf), bytes);
+      if (A[j] == i) {
+        ofsA.write(reinterpret_cast<const char*>(&DIM), sizeof(uint32_t));
+        ofsA.write(reinterpret_cast<const char*>(buf), bytes);
+        ++j;
+      } else {
+        ofsB.write(reinterpret_cast<const char*>(&DIM), sizeof(uint32_t));
+        ofsB.write(reinterpret_cast<const char*>(buf), bytes);
+      }
+      if (i == print_point) {
+        std::cout << i << " processed" << std::endl;
+        print_point += 1000000;
+      }
     }
   }
 
