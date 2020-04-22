@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(my_tools)
+project(dataset_tools)
+
+if (NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif ()
 
 set(GCC_WARNINGS "-Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -pthread ${GCC_WARNINGS}")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -march=native -O3")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ggdb -DDEBUG")
-
-if (NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release)
-endif ()
 
 message(STATUS "BUILD_TYPE is ${CMAKE_BUILD_TYPE}")
 message(STATUS "CXX_FLAGS are ${CMAKE_CXX_FLAGS}")
@@ -23,6 +23,6 @@ file(GLOB SOURCE_NAMES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 foreach(SOURCE_NAME ${SOURCE_NAMES})
   MESSAGE("TARGET:" ${SOURCE_NAME})
   get_filename_component(BASE_NAME ${SOURCE_NAME} NAME_WE)
-  add_executable(kamp_${BASE_NAME} ${SOURCE_NAME})
-  install(TARGETS kamp_${BASE_NAME} RUNTIME DESTINATION bin)
+  add_executable(${BASE_NAME}-k ${SOURCE_NAME})
+  install(TARGETS ${BASE_NAME}-k RUNTIME DESTINATION bin)
 endforeach(SOURCE_NAME)

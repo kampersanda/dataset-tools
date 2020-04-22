@@ -33,7 +33,7 @@
 
 # My Definition
 .DS_Store
-build/
+build*/
 release-build/
 cmake-build-debug/
 .idea/
